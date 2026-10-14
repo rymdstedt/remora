@@ -6,10 +6,49 @@
 
 ## Download
 
-**[⬇ Download the latest Remora for macOS](https://github.com/rymdstedt/remora/releases/latest)** – a universal app for Apple Silicon and Intel, macOS 12 or later.
+**[⬇ Download the latest Remora for macOS](https://github.com/rymdstedt/remora/releases/latest)** – a universal app for Apple Silicon and Intel, macOS 12 or later. Prefer a server? See [Docker](#docker).
 
 1. Open the DMG and drag **Remora** into **Applications**.
 2. The first launch is blocked because the app is not notarized by Apple. Open **System Settings › Privacy & Security**, click **Open Anyway**, then **Open**. This is only needed once.
+
+## Docker
+
+Run Remora on a home server, NAS or Raspberry Pi and open it from a browser. Images for **amd64** and **arm64**:
+
+```bash
+# Linux host – watch the host's real network interfaces (open http://localhost:8787 on that machine)
+docker run -d --name remora --network host -e HOST=127.0.0.1 --restart unless-stopped ghcr.io/rymdstedt/remora
+
+# Any Docker host – analyze capture files in the browser
+docker run -d --name remora -p 127.0.0.1:8787:8787 ghcr.io/rymdstedt/remora
+```
+
+Or with Docker Compose – save as `compose.yaml` and run `docker compose up -d`:
+
+```yaml
+services:
+  remora:
+    image: ghcr.io/rymdstedt/remora:latest
+    network_mode: host          # the host's own interfaces – Linux only
+    environment:
+      HOST: 127.0.0.1           # reachable from this machine only
+      # HOST: 0.0.0.0           # reachable from other devices …
+      # REMORA_ALLOWED_HOSTS: nas.lan,192.168.1.5   # … under these names
+      # REMORA_LIVE: "off"      # file viewer only, no live capture
+    restart: unless-stopped
+```
+
+| Setting | Default | Meaning |
+|---|---|---|
+| `HOST` | `0.0.0.0` | address to listen on inside the container |
+| `PORT` | `8787` | port |
+| `REMORA_ALLOWED_HOSTS` | – | extra names allowed in the address bar, comma-separated (`localhost` always works) |
+| `REMORA_LIVE` | on | `off` disables live capture and keeps the file viewer |
+
+**Good to know**
+- Live capture of your LAN needs `--network host` on Linux. On Docker Desktop (Mac/Windows) the container only sees Docker's internal network, so use it for capture files there – or use the Mac app.
+- **Anyone who can open the page can watch live traffic.** Keep it on localhost or a trusted network, or put a login-protected reverse proxy in front. Use `REMORA_LIVE=off` to share only the file viewer.
+- The container runs as an unprivileged user; packet capture only gets the `CAP_NET_RAW` permission that Docker grants by default.
 
 ## What it shows
 
@@ -32,7 +71,7 @@ Live capture uses Wireshark's `dumpcap`. Install [Wireshark](https://www.wiresha
 
 ## Privacy
 
-Everything runs locally. Captures are parsed on your Mac and never leave it, and the app opens no network ports.
+Everything runs locally: captures are parsed in the app (or in your own Docker container) and are never uploaded anywhere. The Mac app opens no network ports; the Docker image serves the UI on port 8787 only where you publish it.
 
 ## Known limitations
 
