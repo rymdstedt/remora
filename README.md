@@ -23,6 +23,12 @@ docker run -d --name remora --network host -e HOST=127.0.0.1 --restart unless-st
 docker run -d --name remora -p 127.0.0.1:8787:8787 ghcr.io/rymdstedt/remora
 ```
 
+No registry access? Every [release](https://github.com/rymdstedt/remora/releases/latest) also has the image as a file – `remora-<version>-docker-amd64.tar.gz` (Intel/AMD, most NAS boxes) or `…-arm64.tar.gz` (Raspberry Pi, ARM servers). Load it once, then use the same `docker run` commands:
+
+```bash
+gunzip -c remora-1.1.0-docker-amd64.tar.gz | docker load
+```
+
 Or with Docker Compose – save as `compose.yaml` and run `docker compose up -d`:
 
 ```yaml
