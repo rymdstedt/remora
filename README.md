@@ -6,10 +6,19 @@
 
 ## Download
 
-**[⬇ Download the latest Remora for macOS](https://github.com/rymdstedt/remora/releases/latest)** – a universal app for Apple Silicon and Intel, macOS 12 or later. Prefer a server? See [Docker](#docker).
+**[⬇ Download the latest Remora](https://github.com/rymdstedt/remora/releases/latest)** for macOS or Windows. Prefer a server? See [Docker](#docker).
+
+### macOS
+`Remora-<version>.dmg` – a universal app for Apple Silicon and Intel, macOS 12 or later.
 
 1. Open the DMG and drag **Remora** into **Applications**.
 2. The first launch is blocked because the app is not notarized by Apple. Open **System Settings › Privacy & Security**, click **Open Anyway**, then **Open**. This is only needed once.
+
+### Windows
+`Remora-<version>-windows-x64.zip` – Windows 10 or 11, 64-bit (x64).
+
+1. Unzip it and double-click **Remora.exe**. Remora opens in your browser; a small console window stays open while it runs – close it to quit.
+2. The first time, SmartScreen may say *Windows protected your PC* because the app is not code-signed. Click **More info**, then **Run anyway**.
 
 ## Docker
 
@@ -52,7 +61,7 @@ services:
 | `REMORA_LIVE` | on | `off` disables live capture and keeps the file viewer |
 
 **Good to know**
-- Live capture of your LAN needs `--network host` on Linux. On Docker Desktop (Mac/Windows) the container only sees Docker's internal network, so use it for capture files there – or use the Mac app.
+- Live capture of your LAN needs `--network host` on Linux. On Docker Desktop (Mac/Windows) the container only sees Docker's internal network, so use it for capture files there – or use the Mac or Windows app.
 - **Anyone who can open the page can watch live traffic.** Keep it on localhost or a trusted network, or put a login-protected reverse proxy in front. Use `REMORA_LIVE=off` to share only the file viewer.
 - The container runs as an unprivileged user; packet capture only gets the `CAP_NET_RAW` permission that Docker grants by default.
 
@@ -90,13 +99,13 @@ Connect Remora to a switch's mirror (SPAN) or trunk port to see 802.1Q VLAN tags
 
 ## Live capture
 
-Opening `.pcap` / `.pcapng` files works out of the box – drop a file on the window, press **⌘O**, or use **Open With › Remora** in Finder.
+Opening `.pcap` / `.pcapng` files works out of the box – drop a file on the window, press **⌘O**, or use **Open With › Remora** in Finder. On Windows, drop the file on the page or click **Open capture file**.
 
-Live capture uses Wireshark's `dumpcap`. Install [Wireshark](https://www.wireshark.org) and keep **Install ChmodBPF** checked so captures work without admin rights. Then pick an interface, optionally add a capture filter such as `port 53`, and press **Live**.
+Live capture uses Wireshark's `dumpcap`. Install [Wireshark](https://www.wireshark.org) – on macOS keep **Install ChmodBPF** checked, on Windows keep **Install Npcap** checked – so captures work without admin rights, then restart Remora. Pick an interface, optionally add a capture filter such as `port 53`, and press **Live**.
 
 ## Privacy
 
-Everything runs locally: captures are parsed in the app (or in your own Docker container) and are never uploaded anywhere. The Mac app opens no network ports; the Docker image serves the UI on port 8787 only where you publish it.
+Everything runs locally: captures are parsed in the app (or in your own Docker container) and are never uploaded anywhere. The Mac app opens no network ports; the Windows app serves the UI to your own computer only (`127.0.0.1`, port 8787); the Docker image serves it on port 8787 only where you publish it.
 
 ## Known limitations
 
