@@ -20,6 +20,9 @@
 1. Unzip it and double-click **Remora.exe**. Remora opens in your browser; a small console window stays open while it runs – close it to quit.
 2. The first time, SmartScreen may say *Windows protected your PC* because the app is not code-signed. Click **More info**, then **Run anyway**.
 
+### Updates
+When a new version is out, Remora shows a banner with a download link (Mac and Windows) or the `docker pull` command (Docker). **Skip this version** hides it until the next one. In the Mac app, **Remora › Check for Updates…** checks right away.
+
 ## Docker
 
 Run Remora on a home server, NAS or Raspberry Pi and open it from a browser. Images for **amd64** and **arm64**:
@@ -59,6 +62,7 @@ services:
 | `PORT` | `8787` | port |
 | `REMORA_ALLOWED_HOSTS` | – | extra names allowed in the address bar, comma-separated (`localhost` always works) |
 | `REMORA_LIVE` | on | `off` disables live capture and keeps the file viewer |
+| `REMORA_UPDATE_CHECK` | on | `off` stops the check for new versions |
 
 **Good to know**
 - Live capture of your LAN needs `--network host` on Linux. On Docker Desktop (Mac/Windows) the container only sees Docker's internal network, so use it for capture files there – or use the Mac or Windows app.
@@ -105,7 +109,7 @@ Live capture uses Wireshark's `dumpcap`. Install [Wireshark](https://www.wiresha
 
 ## Privacy
 
-Everything runs locally: captures are parsed in the app (or in your own Docker container) and are never uploaded anywhere. The Mac app opens no network ports; the Windows app serves the UI to your own computer only (`127.0.0.1`, port 8787); the Docker image serves it on port 8787 only where you publish it.
+Everything runs locally: captures are parsed in the app (or in your own Docker container) and are never uploaded anywhere. The only thing Remora sends is an update check: when it starts and every 12 hours it asks GitHub for the latest release (the request carries just the app version). Turn it off in the Mac app under **Remora › Check for Updates Automatically**, or with `REMORA_UPDATE_CHECK=off` for Windows and Docker. The Mac app opens no network ports; the Windows app serves the UI to your own computer only (`127.0.0.1`, port 8787); the Docker image serves it on port 8787 only where you publish it.
 
 ## Known limitations
 
